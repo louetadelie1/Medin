@@ -32,18 +32,30 @@ export LD_LIBRARY_PATH="/u/adlouet/software/plumed2/src/lib/:$LD_LIBRARY_PATH"
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export OMP_PLACES=cores
 
-#for x in rep*; do (cd ${x}/prod && gmx_mpi trjcat -f traj_comp.part00{01..19}.xtc -o cat.xtc);done
-#for x in rep*; do (cd ${x}/prod && echo 17 | gmx_mpi trjconv -f cat.xtc -o cat_no_solv.xtc -n ../../index.ndx);done
+for x in rep*; do (cd ${x}/prod && gmx_mpi trjcat -f traj_comp.part00{01..19}.xtc -o cat.xtc);done
+for x in rep*; do (cd ${x}/prod && echo 17 | gmx_mpi trjconv -f cat.xtc -o cat_no_solv.xtc -n ../../index.ndx);done
 
-#gmx_mpi trjcat -f rep*/prod/cat_no_solv.xtc -o concatenatex_cm8.xtc -cat -settime <<EOF
-#EOF
-#
 #for x in rep*; do (cd ${x}/prod && echo 17 | gmx_mpi trjconv -f cat.xtc -s prod_final.tpr -pbc nojump -o mol_whole_nosol.xtc -n ../../index.ndx);done
-#gmx_mpi trjcat -f rep*/prod/mol_whole_nosol.xtc -o concatenate_cm8.xtc -cat -settime <<EOF
-#0
-#c
-#c
-#EOF
+gmx_mpi trjcat -f rep*/prod/mol_whole_nosol.xtc -o concatenate_cm8.xtc -cat -settime <<EOF
+0
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+c
+EOF
 
-cd plumed_files_reweight && plumed driver --mf_xtc ../concatenate_cm8.xtc --plumed plumed_reweight.dat --multi 16 --kt 2.311420
-#cd plumed_files_reweight && plumed driver --mf_xtc ../concatenatex_cm8.xtc --plumed plumed_reweight.dat --kt 0.55244 && cd ..
+cd plumed_files_reweight && plumed driver --mf_xtc ../concatenate_cm8.xtc --plumed plumed_reweight.dat --multi 16 
