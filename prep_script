@@ -1,0 +1,111 @@
+ZINC_ID=cm8
+
+#pre_path="/mnt/lustre/a2fs-nvme/work/e280/e280/al2108/dd_proj/medin"
+pre_path="//ptmp/adlouet/camb/medin"
+
+pre_path="/u/adlouet/bin/medin"
+
+path=$pre_path/$ZINC_ID
+
+protein_name=medin
+
+ff=$path/a99SBdisp.ff
+
+ac_folder=$path/parameter_files_openff_cm8
+
+mdp=$path/run_para
+
+for d in rep_{0..15}; do
+    cd ${d} &&
+        mkdir generate_complex
+        cd generate_complex
+        ln -s $ff .
+        gmx_mpi pdb2gmx -f ../pair*.pdb -o $protein_name.pdb -p $protein_name.top -ignh <<EOF
+1
+1
+EOF
+
+#need acpype folder in the same direcotyr
+        ln -s $ac_folder .
+        grep -h ATOM $protein_name.pdb ../cm10_translated.pdb > Complex.pdb
+        cp $ac_folder/*_MOL0.itp Ligand.itp
+	cp $ac_folder/*_atomtypes.itp ./
+        sed -i 's/MOL0/UNL/g' *.itp
+	sed -i 's/UNL0/UNL/g' *.itp
+	mv *_MOL0.itp Ligand.itp
+        mv *_atomtypes.itp Ligand_atomtypes.itp
+# Need to create a position restraint file for the ligand if not using acpype 
+        cp $protein_name.top Complex2.top
+
+sed -e '/#include ".\/a99SBdisp.ff\/forcefield.itp"/a\
+\
+; Include ligand parameters\
+#include "Ligand_atomtypes.itp"\
+\
+' -e '/; Include water topology/i\
+\
+; Include ligand topology\
+#include "Ligand.itp"\
+\
+' Complex2.top > Complex.top
+echo "UNL  1" >> Complex.top
+sed -i 's/MOL/UNL/g' Complex.pdb
+	cd ../
+        mkdir prep
+
+        cd prep
+        ln -s $ff .
+        gmx_mpi editconf -f ../generate_complex/Complex.pdb -o Complex_box.gro -c -d 1.5 -bt dodecahedron
+        gmx_mpi solvate -cp Complex_box.gro -cs tip4p.gro -o Complex_solv.gro -p ../generate_complex/Complex.top
+        gmx_mpi grompp -f $mdp/em_ions.mdp -c Complex_solv.gro  -p ../generate_complex/Complex.top -o Complex_solv.tpr -maxwarn 3 #the only warnings should be regardaing the Hydrogen bonds that should be mismatched.
+
+        #### Shows charge of complex #####
+        grep "qtot" ../generate_complex/Complex.top | tail -n 1 | awk '{print $11}'
+
+        gmx_mpi genion -s Complex_solv.tpr -o Complex_ionized.gro  -p ../generate_complex/Complex.top -nname CL -pname NA -neutral
+
+        cd ../
+
+        mkdir minim
+        cd minim;
+        mkdir em
+        cd em
+
+        gmx_mpi grompp -f $mdp/em_min.mdp -c ../../prep/Complex_ionized.gro  -p ../../generate_complex/Complex.top -o Complex_em.tpr -maxwarn 1
+        srun gmx_mpi mdrun -v -s Complex_em.tpr
+
+
+        cd ../
+
+        mkdir nvt
+        cd nvt
+
+	gmx_mpi make_ndx -f ../../cm10_translated.pdb << EOF
+2
+q
+EOF
+
+	sed -i 's/MOL/UNL/g' index.ndx
+	gmx_mpi genrestr -f ../../cm10_translated.pdb -n index.ndx -o posre_LIGAND.itp -fc 1000 1000 1000 <<EOF
+2
+EOF
+
+        gmx_mpi grompp -f $mdp/eq_nvt.mdp -c ../em/confout.gro -r ../em/confout.gro -p ../../generate_complex/Complex.top -o Complex_nvt.tpr -maxwarn 1
+
+        srun gmx_mpi mdrun -v -s Complex_nvt.tpr
+        cd ../
+        mkdir npt
+        cd npt
+
+        gmx_mpi grompp -f $mdp/eq_npt.mdp -c ../nvt/confout.gro -r ../nvt/confout.gro -p ../../generate_complex/Complex.top -o Complex_npt.tpr -maxwarn 15
+        srun gmx_mpi mdrun -v -s Complex_npt.tpr
+
+        cd ../../
+        mkdir prod
+        cd prod
+
+        gmx_mpi grompp -f $mdp/prod_run.mdp -c ../minim/npt/confout.gro -r ../minim/npt/confout.gro -p ../generate_complex/Complex.top -o prod_final.tpr -maxwarn 15
+
+        cd ../../
+
+done

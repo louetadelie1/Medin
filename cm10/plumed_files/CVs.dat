@@ -1,0 +1,74 @@
+#This is the metadynamics CV file
+
+#CV1 alpha helix
+ALPHARMSD RESIDUES=268-316 TYPE=DRMSD LESS_THAN={RATIONAL R_0=0.08 NN=8 MM=12} LABEL=helix
+
+#CV2 sum parallel and anti-parallel beta-content
+PARABETARMSD RESIDUES=268-316 TYPE=DRMSD LESS_THAN={RATIONAL R_0=0.08 NN=8 MM=12} LABEL=par
+ANTIBETARMSD RESIDUES=268-316 TYPE=DRMSD LESS_THAN={RATIONAL R_0=0.08 NN=8 MM=12} LABEL=anti
+COMBINE ARG=par.lessthan,anti.lessthan PERIODIC=NO LABEL=beta
+
+#CV3 radius of gyration
+ca: GROUP ATOMS=5,29,48,60,82,99,106,120,140,154,164,188,204,214,221,232,253,260,274,286,303,327,346,363,379,391,410,417,428,439,461,476,492,506,513,532,551,565,582,589,599,623,637,657,664,675,691,708,728
+rgyr: GYRATION ATOMS=ca 
+
+#CV4 contacts between hydrophobic residues calculated as the number of Cbeta carbon couples closer than 0.6 nm 
+#COORDINATION GROUPA=19,44,171,260,279,295,315,335,372,449,459,478,504,523,540,570,586,602,621 R_0=0.6 NOPBC NLIST NL_CUTOFF=1.0 NL_STRIDE=20 LABEL=hydro
+
+#CV5 the number of salt-bridges calculated as the number of couples of heavy atoms from the charged group closer than 0.6 nm 
+#GROUP A is all the heavy atoms from RCOO- group of aspartic acids and glutamic acids 
+#GROUP B is all the heavy atoms from RHN3+ from lysines or (RNHC(NH2)2+) of arginines
+#COORDINATION GROUPA=10,11,12,35,36,37,108,109,110,162,163,164,351,352,353,363,364,365 GROUPB=75,76,77,78,79,80,81,250,251,252,253,432,433,434,435 R_0=0.6 NOPBC NLIST NL_CUTOFF=1.0 NL_STRIDE=20 LABEL=salt
+
+#CV6 correlation between consecutive psi torsion angles.
+DIHCOR ...
+ATOMS1=@psi-268,@psi-269
+ATOMS2=@psi-269,@psi-270
+ATOMS3=@psi-270,@psi-271
+ATOMS4=@psi-271,@psi-272
+ATOMS5=@psi-272,@psi-273
+ATOMS6=@psi-273,@psi-274
+ATOMS7=@psi-274,@psi-275
+ATOMS8=@psi-275,@psi-276
+ATOMS9=@psi-276,@psi-277
+ATOMS10=@psi-277,@psi-278
+ATOMS11=@psi-278,@psi-279
+ATOMS12=@psi-279,@psi-280
+ATOMS13=@psi-280,@psi-281
+ATOMS14=@psi-281,@psi-282
+ATOMS15=@psi-282,@psi-283
+ATOMS16=@psi-283,@psi-284
+ATOMS17=@psi-284,@psi-285
+ATOMS18=@psi-285,@psi-286
+ATOMS19=@psi-286,@psi-287
+ATOMS20=@psi-287,@psi-288
+ATOMS21=@psi-288,@psi-289
+ATOMS22=@psi-289,@psi-290
+ATOMS23=@psi-290,@psi-291
+ATOMS24=@psi-291,@psi-292
+ATOMS25=@psi-292,@psi-293
+ATOMS26=@psi-293,@psi-294
+ATOMS27=@psi-294,@psi-295
+ATOMS28=@psi-295,@psi-296
+ATOMS29=@psi-296,@psi-297
+ATOMS30=@psi-297,@psi-298
+ATOMS31=@psi-298,@psi-299
+ATOMS32=@psi-299,@psi-300
+ATOMS33=@psi-300,@psi-301
+ATOMS34=@psi-301,@psi-302
+ATOMS35=@psi-302,@psi-303
+ATOMS36=@psi-303,@psi-304
+ATOMS37=@psi-304,@psi-305
+ATOMS38=@psi-305,@psi-306
+ATOMS39=@psi-306,@psi-307
+ATOMS40=@psi-307,@psi-308
+ATOMS41=@psi-308,@psi-309
+ATOMS42=@psi-309,@psi-310
+ATOMS43=@psi-310,@psi-311
+ATOMS44=@psi-311,@psi-312
+ATOMS45=@psi-312,@psi-313
+ATOMS46=@psi-313,@psi-314
+ATOMS47=@psi-314,@psi-315
+ATOMS48=@psi-315,@psi-316
+LABEL=dihcor
+... DIHCOR

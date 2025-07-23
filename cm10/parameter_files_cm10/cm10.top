@@ -1,0 +1,15 @@
+[ defaults ]
+; nbfunc	comb-rule	gen-pairs	fudgeLJ	fudgeQQ
+     1	     2	yes   	0.500000	0.833333
+
+#include "/Users/adelielouet/Documents/science/medin/cm10/parameter_files_openff/cm10_atomtypes.itp"
+#include "/Users/adelielouet/Documents/science/medin/cm10/parameter_files_openff/cm10_MOL0.itp"
+
+[ system ]
+;name
+FOO
+
+[ molecules ]
+;name	number
+MOL0	1
+

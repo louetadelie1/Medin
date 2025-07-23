@@ -1,0 +1,15 @@
+[ defaults ]
+; nbfunc	comb-rule	gen-pairs	fudgeLJ	fudgeQQ
+     1	     2	yes   	0.500000	0.833333
+
+#include "/Users/adelielouet/Documents/science/medin/urea/parameter_files_openff/_atomtypes.itp"
+#include "/Users/adelielouet/Documents/science/medin/urea/parameter_files_openff/_URE.itp"
+
+[ system ]
+;name
+FOO
+
+[ molecules ]
+;name	number
+URE	1
+

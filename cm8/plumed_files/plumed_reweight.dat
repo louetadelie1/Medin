@@ -1,0 +1,36 @@
+#this is the master plumed.dat file for metadynamic metainference simulations
+
+# run using this command - plumed driver --mf_xtc ../concatenate_cm8.xtc --plumed plumed_reweight.dat 
+
+RESTART
+# define groups
+MOLINFO STRUCTURE=../template_complex.pdb #../protein_ligand.gro CHAIN=off
+WHOLEMOLECULES ENTITY0=1-752 ENTITY1=753-834 
+FLUSH STRIDE=1000
+
+#include file with definition of metadynamics CVs
+INCLUDE FILE=CVs.dat
+
+#include file with definition of metadynamics CVs involving the small molecule
+INCLUDE FILE=CVs_drug.dat
+
+#activate parallel bias metadynamics 
+PBMETAD ...
+    ARG=helix.lessthan,beta,rgyr,dihcor,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31,reg32,reg33,reg34,reg35,reg36,reg37,reg38,reg39,reg40,reg41,reg42,reg43,reg44,reg45,reg46,reg47,reg48,ligtor1,ligtor2,ligtor3,ligtor4,ligtor5,ligtor6,ligtor7,ligtor8,ligtor9,ligtor10,ligtor11,ligtor12
+    HEIGHT=0.0
+    BIASFACTOR=80
+    SIGMA=0.64,0.33,0.03,1.34,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1
+    PACE=500000000
+    TEMP=278
+    GRID_MIN=-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-pi,-pi,-pi,-pi,-pi,-pi,-pi,-pi,-pi,-pi,-pi,-pi
+    GRID_MAX=100,100,20,50,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi,pi
+    #GRID_SPACING=0.1,0.1,0.01,0.01,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01
+    GRID_WSTRIDE=10000
+    FILE=../rep_0/prod/HILLS_helix.lessthan,../rep_0/prod/HILLS_beta,../rep_0/prod/HILLS_rgyr,../rep_0/prod/HILLS_dihcor,../rep_0/prod/HILLS_reg1,../rep_0/prod/HILLS_reg2,../rep_0/prod/HILLS_reg3,../rep_0/prod/HILLS_reg4,../rep_0/prod/HILLS_reg5,../rep_0/prod/HILLS_reg6,../rep_0/prod/HILLS_reg7,../rep_0/prod/HILLS_reg8,../rep_0/prod/HILLS_reg9,../rep_0/prod/HILLS_reg10,../rep_0/prod/HILLS_reg11,../rep_0/prod/HILLS_reg12,../rep_0/prod/HILLS_reg13,../rep_0/prod/HILLS_reg14,../rep_0/prod/HILLS_reg15,../rep_0/prod/HILLS_reg16,../rep_0/prod/HILLS_reg17,../rep_0/prod/HILLS_reg18,../rep_0/prod/HILLS_reg19,../rep_0/prod/HILLS_reg20,../rep_0/prod/HILLS_reg21,../rep_0/prod/HILLS_reg22,../rep_0/prod/HILLS_reg23,../rep_0/prod/HILLS_reg24,../rep_0/prod/HILLS_reg25,../rep_0/prod/HILLS_reg26,../rep_0/prod/HILLS_reg27,../rep_0/prod/HILLS_reg28,../rep_0/prod/HILLS_reg29,../rep_0/prod/HILLS_reg30,../rep_0/prod/HILLS_reg31,../rep_0/prod/HILLS_reg32,../rep_0/prod/HILLS_reg33,../rep_0/prod/HILLS_reg34,../rep_0/prod/HILLS_reg35,../rep_0/prod/HILLS_reg36,../rep_0/prod/HILLS_reg37,../rep_0/prod/HILLS_reg38,../rep_0/prod/HILLS_reg39,../rep_0/prod/HILLS_reg40,../rep_0/prod/HILLS_reg41,../rep_0/prod/HILLS_reg42,../rep_0/prod/HILLS_reg43,../rep_0/prod/HILLS_reg44,../rep_0/prod/HILLS_reg45,../rep_0/prod/HILLS_reg46,../rep_0/prod/HILLS_reg47,../rep_0/prod/HILLS_reg48,../rep_0/prod/HILLS_ligtor1,../rep_0/prod/HILLS_ligtor2,../rep_0/prod/HILLS_ligtor3,../rep_0/prod/HILLS_ligtor4,../rep_0/prod/HILLS_ligtor5,../rep_0/prod/HILLS_ligtor6,../rep_0/prod/HILLS_ligtor7,../rep_0/prod/HILLS_ligtor8,../rep_0/prod/HILLS_ligtor9,../rep_0/prod/HILLS_ligtor10,../rep_0/prod/HILLS_ligtor11,../rep_0/prod/HILLS_ligtor12
+    WALKERS_MPI
+    LABEL=pbmetad
+... PBMETAD
+
+#print out relevant info
+PRINT ARG=helix.lessthan,beta,rgyr,dihcor,pbmetad.bias,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31,reg32,reg33,reg34,reg35,reg36,reg37,reg38,reg39,reg40,reg41,reg42,reg43,reg44,reg45,reg46,reg47,reg48,ligtor1,ligtor2,ligtor3,ligtor4,ligtor5,ligtor6,ligtor7,ligtor8,ligtor9,ligtor10,ligtor11,ligtor12,pbmetad.bias FILE=COLVAR_REWEIGHT 
+ENDPLUMED

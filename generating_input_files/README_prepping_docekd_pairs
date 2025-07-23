@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# 1. Generate 48 PDB files (rep_0 to rep_47)
+bash generate_input.sh
+
+# 2. Run fpocket on each PDB file
+# Assumes fpocket environment is activated
+for x in rep_{0..47}; do
+    (cd $x && fpocket -f *.pdb)
+done
+
+# 3. Prepare docking boxes from stp files for vina
+python make_vina_files.py
+
+# 4. Docking
+
+## 4.A. Prepare the protein receptor (requires py36 environment)
+# Activate py36 environment and use prepare_receptor4.py as needed
+# Example:
+# conda activate py36
+# prepare_receptor4.py -r medin.pdb -o medin.pdbqt
+
+## 4.B. Prepare the ligand
+# Convert ligand from SDF to PDBQT using Open Babel
+obabel -isdf ZINC000265540661.sdf -opdbqt -O ZINC000265540661.pdbqt
+
+# Run docking for each replicate
+for x in rep_*; do
+    (
+        cd $x &&
+        vina \
+            --receptor medin.pdbqt \
+            --ligand ../ZINC000265540661.pdbqt \
+            --config docked/*box.txt \
+            --exhaustiveness 32 \
+            --out medin_docked.pdbqt
+    )
+done
+
+# 5. Convert output PDBQT to PDB and ensure hydrogens are added
+# Important: Activate environment with obabel and Python 3.10
+conda activate py10_babel
+
+# Convert and extract model 1 with hydrogens
+obabel -ipdbqt medin_docked.pdbqt -opdb -O medin_docked_H.pdb -h
+sed -n '13,62p' medin_docked_H.pdb > first_docked_pose_H.pdb
+# Add hydrogens again (due to loss during slicing)
+obabel -ipdb first_docked_pose_H.pdb -opdb -O first_docked_pose_H.pdb -h
+
+# ⚠️ Special Case: cm8 molecule
+# Open Babel may add extra hydrogens around nitrogens
+# Manually remove problematic hydrogens (e.g., atoms 75 and 79)
+# Consider skipping hydrogen addition if the final structure is only used for alignment
+
+# Optional: Hydrogen processing only for select reps
+for x in rep_{2,20,23,31,47}; do
+    (
+        cd $x &&
+        obabel -ipdbqt medin_docked.pdbqt -opdb -O medin_docked_H.pdb -h &&
+        sed -n '11,50p' medin_docked_H.pdb > first_docked_pose_H.pdb
+    )
+done

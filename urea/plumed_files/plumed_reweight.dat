@@ -1,0 +1,34 @@
+#this is the master plumed.dat file for metadynamic metainference simulations
+RESTART
+# define groups
+MOLINFO STRUCTURE=../template_complex.pdb
+WHOLEMOLECULES ENTITY0=1-752 ENTITY1=753-760 
+FLUSH STRIDE=1000
+
+#include file with definition of metadynamics CVs
+INCLUDE FILE=CVs.dat
+
+#include file with definition of metadynamics CVs involving the small molecule
+INCLUDE FILE=CVs_drug.dat
+
+#activate parallel bias metadynamics 
+PBMETAD ...
+    ARG=helix.lessthan,beta,rgyr,dihcor,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31,reg32,reg33,reg34,reg35,reg36,reg37,reg38,reg39,reg40,reg41,reg42,reg43,reg44,reg45,reg46,reg47,reg48
+    HEIGHT=0.0
+    TEMP=278
+    BIASFACTOR=72
+    SIGMA=0.64,0.33,0.03,1.34,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+    PACE=500000000
+    GRID_MIN=-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    GRID_MAX=100,100,20,50,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550,550
+    GRID_SPACING=0.1,0.1,0.01,0.01,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1 
+    GRID_WSTRIDE=10000
+    GRID_RFILES=../rep_0/prod/GRID.helix_lessthan,../rep_0/prod/GRID.beta,../rep_0/prod/GRID.rgyr,../rep_0/prod/GRID.dihcor,../rep_0/prod/GRID.reg1,../rep_0/prod/GRID.reg2,../rep_0/prod/GRID.reg3,../rep_0/prod/GRID.reg4,../rep_0/prod/GRID.reg5,../rep_0/prod/GRID.reg6,../rep_0/prod/GRID.reg7,../rep_0/prod/GRID.reg8,../rep_0/prod/GRID.reg9,../rep_0/prod/GRID.reg10,../rep_0/prod/GRID.reg11,../rep_0/prod/GRID.reg12,../rep_0/prod/GRID.reg13,../rep_0/prod/GRID.reg14,../rep_0/prod/GRID.reg15,../rep_0/prod/GRID.reg16,../rep_0/prod/GRID.reg17,../rep_0/prod/GRID.reg18,../rep_0/prod/GRID.reg19,../rep_0/prod/GRID.reg20,../rep_0/prod/GRID.reg21,../rep_0/prod/GRID.reg22,../rep_0/prod/GRID.reg23,../rep_0/prod/GRID.reg24,../rep_0/prod/GRID.reg25,../rep_0/prod/GRID.reg26,../rep_0/prod/GRID.reg27,../rep_0/prod/GRID.reg28,../rep_0/prod/GRID.reg29,../rep_0/prod/GRID.reg30,../rep_0/prod/GRID.reg31,../rep_0/prod/GRID.reg32,../rep_0/prod/GRID.reg33,../rep_0/prod/GRID.reg34,../rep_0/prod/GRID.reg35,../rep_0/prod/GRID.reg36,../rep_0/prod/GRID.reg37,../rep_0/prod/GRID.reg38,../rep_0/prod/GRID.reg39,../rep_0/prod/GRID.reg40,../rep_0/prod/GRID.reg41,../rep_0/prod/GRID.reg42,../rep_0/prod/GRID.reg43,../rep_0/prod/GRID.reg44,../rep_0/prod/GRID.reg45,../rep_0/prod/GRID.reg46,../rep_0/prod/GRID.reg47,../rep_0/prod/GRID.reg48
+    FILE=HILLS_helix.lessthan,HILLS_beta,HILLS_rgyr,HILLS_dihcor,HILLS_reg1,HILLS_reg2,HILLS_reg3,HILLS_reg4,HILLS_reg5,HILLS_reg6,HILLS_reg7,HILLS_reg8,HILLS_reg9,HILLS_reg10,HILLS_reg11,HILLS_reg12,HILLS_reg13,HILLS_reg14,HILLS_reg15,HILLS_reg16,HILLS_reg17,HILLS_reg18,HILLS_reg19,HILLS_reg20,HILLS_reg21,HILLS_reg22,HILLS_reg23,HILLS_reg24,HILLS_reg25,HILLS_reg26,HILLS_reg27,HILLS_reg28,HILLS_reg29,HILLS_reg30,HILLS_reg31,HILLS_reg32,HILLS_reg33,HILLS_reg34,HILLS_reg35,HILLS_reg36,HILLS_reg37,HILLS_reg38,HILLS_reg39,HILLS_reg40,HILLS_reg41,HILLS_reg42,HILLS_reg43,HILLS_reg44,HILLS_reg45,HILLS_reg46,HILLS_reg47,HILLS_reg48
+    WALKERS_MPI
+    LABEL=pbmetad
+... PBMETAD
+
+#print out relevant info
+PRINT ARG=helix.lessthan,beta,rgyr,dihcor,pbmetad.bias,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31,reg32,reg33,reg34,reg35,reg36,reg37,reg38,reg39,reg40,reg41,reg42,reg43,reg44,reg45,reg46,reg47,reg48,pbmetad.bias FILE=COLVAR_REWEIGHT STRIDE=1
+ENDPLUMED
