@@ -1,23 +1,49 @@
-This contains all the necessary information to prep and run 3 systems of medin - with 2 small molecule ligands (ZINC265540661 and ZINC2325837608) and urea as a control. These were run using 16 replicas each, with multiple walker metadynamics. 
+**This repository contains all the necessary information to prepare and run three systems of Medin** — with two small molecule ligands (**ZINC265540661** and **ZINC2325837608**) and **urea** as a control. These were run using **16 replicas each**, with **multiple walker metadynamics**.
 
-Ligand Prep - The ligands came from the ZINC20 library, and parametrized using openff SAGE software (details included in generating_input_files). 
+---
 
-Starting Configuration of Medin - A free single replica simulation of the medin (lactadherin human Q08431 - AlphaFold web server - Residues 268:317 extracted - FASTA RLDKQGNFNAWVAGSYGNDQWLQVDLGSSKEVTGIITQGARNFGSVQFVA) was run at high temperature, and 16 random frames were selected throughout the simualtion to generate the 16 starting strucutres for each replica. We then used fpocket to identify the best pocket per frame, and proceeded to dock the following ligands on each pocket to find the best starting configuration for the protein-ligand simulations (simu will therefore begin in bound state).
+### **Ligand Preparation**
 
-Preparing Protein Ligand Complex for Metadynamics - The prep_file is used to prep the systems (in a99SBdisp.ff) and the plumed files are included to run the metadynamics. I have also included a plumed_reweight file that is used to unbias the simulations for post-processing. The 16 replicas combined were run for a bit under 10us per system. 
+The ligands came from the **ZINC20** library and were parametrized using **OpenFF SAGE** software (details included in the `generating_input_files` directory).
 
-Post processing is then carried out in analysis notebooks using the following code-
+---
 
-w_eq = np.loadtxt(w_file)
+### **Starting Configuration of Medin**
+
+A **free single-replica simulation** of Medin (lactadherin human **Q08431**, AlphaFold web server, **residues 268–317 extracted**) was run at high temperature.  
+**FASTA sequence**:  
+`RLDKQGNFNAWVAGSYGNDQWLQVDLGSSKEVTGIITQGARNFGSVQFVA`
+
+From this trajectory, **16 random frames** were selected to generate the **16 starting structures** for each replica.  
+We then used **fpocket** to identify the best pocket per frame, and docked the ligands onto these pockets to determine the **best starting configuration** for the protein-ligand simulations.  
+*Simulations therefore begin in the bound state.*
+
+---
+
+### **Preparing Protein–Ligand Complex for Metadynamics**
+
+The `prep_file` is used to set up the systems (in **a99SBdisp.ff**), and the **PLUMED** files are included to run the metadynamics.  
+A `plumed_reweight` file is also included for **unbiasing the simulations** during post-processing.  
+The **16 replicas combined were run for just under 10 μs per system**.
+
+---
+
+### **Post-processing**
+
+Post-processing is carried out in the analysis notebooks using the following code:
+
+```python
+import numpy as np
+
+KBT = 2.49  # kJ/mol
+
 def process_weights(w_file):
-    KBT = 2.49  # kJ/mol
-    colvar_file = w_file
-    data = np.loadtxt(colvar_file, comments="#")
+    data = np.loadtxt(w_file, comments="#")
     bias = data[:, -1]
     weights = np.exp(bias / KBT)
-    weights /= weights.sum() 
+    weights /= weights.sum()
+    return weights
 
-To account for equilirbartion artifacts, the first 10% of each replica was discarded (and the same done in the COVAR REWEIGHT file).
 
 def trim(file,n_reps,trim_fraction):
     w_split = np.array_split(file, n_reps)
